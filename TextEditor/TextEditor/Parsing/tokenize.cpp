@@ -5,10 +5,9 @@ std::vector<token> tokenize(std::string input) {
 	input.erase(remove_if(input.begin(), input.end(), isspace), input.end());
 	std::string builder = "";
     token dataToken;
-    int currentType;
+    int currentType = token(std::string(1, input.at(0))).tokenType;
 	for (int i = 0; i < input.size(); i++) {
 		dataToken = token(std::string(1, input.at(i)));
-        currentType = dataToken.tokenType;
 		if (input.at(i) == '$' || (dataToken.tokenType == token::Constant && currentType == token::Expression)) {
 			if (currentType != token::Expression) {
 				token builtToken(builder);
