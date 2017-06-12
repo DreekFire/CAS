@@ -4,12 +4,15 @@ std::vector<token> tokenize(std::string input) {
 	std::vector<token> result;
 	input.erase(remove_if(input.begin(), input.end(), isspace), input.end());
 	std::string builder = "";
-	int currentType = token(std::string(1, input.at(0))).tokenType;
-	for (int i = 0; i < (int)input.size(); i++) {
-		token dataToken(std::string(1, input.at(i)));
-		if (input.at(i) == '$' || (node(dataToken).evaluateAble() && currentType == token::Expression)) {
+    token dataToken;
+    int currentType;
+	for (int i = 0; i < input.size(); i++) {
+		dataToken = token(std::string(1, input.at(i)));
+        currentType = dataToken.tokenType;
+		if (input.at(i) == '$' || (dataToken.tokenType == token::Constant && currentType == token::Expression)) {
 			if (currentType != token::Expression) {
 				token builtToken(builder);
+                builtToken.tokenType = currentType;
 				result.push_back(builtToken);
 				builder.clear();
 				builder.append(1, input.at(i));
@@ -22,42 +25,73 @@ std::vector<token> tokenize(std::string input) {
 		else if (dataToken.tokenType == token::Operator) {
 			if (input.at(i) == '-' && currentType == token::Operator) {
 				token builtToken(builder);
+                builtToken.tokenType = currentType;
 				result.push_back(builtToken);
 				builder.clear();
 				builder.append(1, input.at(i));
-				currentType = token::Number;
+				currentType = token::Constant;
 			}
 			else {
 				token builtToken(builder);
+                builtToken.tokenType = currentType;
 				result.push_back(builtToken);
 				builder.clear();
 				builder.append(1, input.at(i));
 				currentType = token::Operator;
 			}
 		}
-		else if (node(dataToken).evaluateAble()) {
-			if (currentType != token::Number) {
+		else if (dataToken.tokenType == token::Constant) {
+			if (currentType != token::Constant) {
 				token builtToken(builder);
+                builtToken.tokenType = currentType;
 				result.push_back(builtToken);
 				builder.clear();
 				builder.append(1, input.at(i));
-				currentType = token::Number;
+				currentType = token::Constant;
 			}
 			else {
 				builder += input.at(i);
 			}
 		}
+        else if (dataToken.tokenType == token::Variable) {
+            if (currentType != token::Variable) {
+                token builtToken(builder);
+                builtToken.tokenType = currentType;
+                result.push_back(builtToken);
+                builder.clear();
+                builder += input.at(i);
+                currentType = token::Variable;
+            }
+            else {
+                builder += input.at(i);
+            }
+        }
+        else if (dataToken.tokenType == token::LeftParen) {
+            if (currentType == token::LeftParen) {
+                token builtToken(builder);
+                builtToken.tokenType = token::LeftParen;
+                result.push_back(builtToken);
+                builder.clear();
+                builder.append(1, input.at(i));
+            }
+            else if (currentType == token::Variable) {
+                token builtToken(builder);
+                builtToken.tokenType = token::Function;
+                result.push_back(builtToken);
+                builder.clear();
+                builder.append(1, input.at(i));
+                currentType = token::LeftParen;
+            }
+        }
+        else if (dataToken.tokenType == token::RightParen) {
+            token builtToken(builder);
+            builtToken.tokenType = currentType;
+            result.push_back(builtToken);
+            builder.clear();
+            builder.append(1, input.at(i));
+        }
 		else {
-			if (currentType != token::Variable) {
-				token builtToken(builder);
-				result.push_back(builtToken);
-				builder.clear();
-				builder += input.at(i);
-				currentType = token::Variable;
-			}
-			else {
-				builder += input.at(i);
-			}
+            std::cout << "could not tokenize: possible invalid character" << std::endl;
 		}
 	}
 	token builtToken(builder);

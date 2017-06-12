@@ -4,7 +4,7 @@ rule::rule(std::string str_a, std::string str_b) : from(shuntingYardAlg(tokenize
 
 }
 
-rule::rule(tree match, tree express) : from(match), replace(express) {
+rule::rule(node match, node express) : from(match), replace(express) {
 
 }
 
@@ -12,17 +12,17 @@ rule::~rule() {
 
 }
 
-node rule::apply(tree express) {
-	node filled(from.root.copy());
-	node replacement(replace.root.copy());
+node rule::apply(node express, rule app) {
+	node filled(app.from.copy());
+	node replacement(app.replace.copy());
 	std::vector<node> expressList;
-	express.root.buildList(filled, expressList);
+	express.buildList(filled, expressList);
 	node::fillProto(filled, expressList);
-	if (express.root.compare(filled)) {
+	if (express.compare(filled)) {
 		node::fillProto(replacement, expressList);
 		return replacement;
 	}
-	return express.root;
+	return express;
 }
 
 ruleSet::ruleSet() {
@@ -37,12 +37,12 @@ ruleSet::~ruleSet() {
 
 }
 
-void ruleSet::reduce(tree& express) {
-	tree temp = express;
-	for (int i = 0; i < rules.size(); i++) {
+void ruleSet::reduce(node& express) {
+	node temp = express;
+	for (int i = 0; i < (int)rules.size(); i++) {
 		temp = express;
-		rules.at(i).apply(express);
-		if (express.root.compare(temp.root)) {
+		rule::apply(express, rules.at(i));
+		if (express.compare(temp)) {
 			i = 0;
 		}
 	}

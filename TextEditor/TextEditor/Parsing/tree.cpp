@@ -4,7 +4,7 @@
 tree::tree(std::vector<token> build) {
 	std::vector<node> nodeStack;
 	for (int i = 0; i < (int) build.size(); i++) {
-		if (build.at(i).tokenType == token::Number || build.at(i).tokenType == token::Variable || build.at(i).tokenType == token::Expression) {
+		if (build.at(i).tokenType == token::Constant || build.at(i).tokenType == token::Variable || build.at(i).tokenType == token::Expression) {
 			nodeStack.push_back(node(build.at(i)));
 		}
 		else if (build.at(i).tokenType == token::type::Operator) {
@@ -66,18 +66,7 @@ tree::~tree() {
 }
 
 void tree::simplify() {
-	rule newRule(std::string("$1 + $1"), std::string("2*$1"));
-	tree temp(this->root.copy());
-	tree simplified(newRule.apply(temp));
-	temp.root.left = NULL;
-	temp.root.right = NULL;
-	simplified.root.print();
-	/*= root.evaluate();
-	node::remove(root.left);
-	node::remove(root.right);
-	root.left = NULL;
-	root.right = NULL;
-	root = temp;*/
+
 }
 
 void node::insert(int i, token data) {
@@ -88,11 +77,9 @@ void node::insert(int i, token data) {
 		right = child;
 }
 
-void tree::remove(int i) {
-	if (i == 0)
-	node::remove(root.left);
-	root.left = NULL;
-	if (i == 1)
-	node::remove(root.right);
-	root.right = NULL;
+double tree::evaluateAt(double x) {
+    tree duplicate = tree(root.copy());
+    duplicate.root.replace(token("x"), token(std::to_string(x)));
+    duplicate.root.evaluate();
+    return stod(duplicate.root.m_data.tokenString);
 }

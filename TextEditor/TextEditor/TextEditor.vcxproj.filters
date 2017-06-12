@@ -48,14 +48,29 @@
     <ClCompile Include="Parsing\tokenize.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
-    <ClCompile Include="Parsing\tree.cpp">
-      <Filter>Source Files\Parsing</Filter>
-    </ClCompile>
     <ClCompile Include="Rewriting\rule.cpp">
       <Filter>Source Files\Rewriting</Filter>
     </ClCompile>
-    <ClCompile Include="button.cpp">
+    <ClCompile Include="Computing\Calculus\Differentiation\derivative.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Computing\Calculus\Integration\riemann.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Computing\Algebra\matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Computing\Algebra\series.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface\button.cpp">
       <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Computing\mathUtil.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,14 +89,29 @@
     <ClInclude Include="Parsing\tokenize.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="Parsing\tree.h">
-      <Filter>Header Files\Parsing</Filter>
-    </ClInclude>
     <ClInclude Include="Rewriting\rule.h">
       <Filter>Header Files\Rewriting</Filter>
     </ClInclude>
-    <ClInclude Include="button.h">
+    <ClInclude Include="Computing\Calculus\Differentiation\derivative.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Computing\Calculus\Integration\riemann.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Computing\Algebra\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Computing\Algebra\series.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\button.h">
       <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Computing\mathUtil.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

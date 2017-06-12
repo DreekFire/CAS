@@ -1,50 +1,51 @@
 #include "shuntingYard.h"
 
-std::map<std::string, int> precedence = { { std::string("+"), 0 },{ std::string("-"), 0 },{ std::string("*"), 1 },{ std::string("/"), 1 },{ std::string("^"), 2 } };
+struct cmpLess {
+    bool operator()(const token lhs, const token rhs) const {
+        return lhs.tokenString < rhs.tokenString;
+    }
+};
 
-std::map<std::string, int> associativity = { { std::string("+"), 0 },{ std::string("-"), 0 },{ std::string("*"), 0 },{ std::string("/"), 0 },{ std::string("^"), 1 } };
+std::map<token, int, cmpLess> precedence = { { token("+"), 0 }, { token("-"), 0 }, { token("*"), 1 }, { token("/"), 1 },{ token("^"), 2 } };
+
+std::map<token, int, cmpLess> associativity = { { token("+"), token::Left }, { token("-"), token::Left }, { token("*"), token::Left }, { token("/"), token::Left },{ token("^"), token::Right } };
 
 std::vector<token> shuntingYardAlg(std::vector<token> tokenList) {
-	int length = tokenList.size();
+	int length = (int)tokenList.size();
 	std::queue<token> outputQueue;
 	std::vector<token> operatorStack;
-	for (int i = 0; i < length; i++)
+	while (!tokenList.empty())
 	{
-		token tkn = tokenList.at(i);
-		if (tkn.tokenType == token::Number || tkn.tokenType == token::Variable || tkn.tokenType == token::Expression) {
+		token tkn = tokenList.back();
+		if (tkn.tokenType == token::Constant || tkn.tokenType == token::Variable || tkn.tokenType == token::Expression) {
 			outputQueue.push(tkn);
 		}
-		else if (tkn.tokenType == token::Operator) {
+        if (tkn.tokenType == token::Operator) {
+            while (!operatorStack.empty() && (precedence[tkn] < precedence[operatorStack.back()] || (precedence[tkn] == precedence[operatorStack.back()] && associativity[tkn] == token::Left))) {
+                outputQueue.push(operatorStack.back());
+                operatorStack.pop_back();
+            }
+            operatorStack.push_back(tkn);
+        }
+		if (tkn.tokenType == token::LeftParen) {
 			operatorStack.push_back(tkn);
 		}
-		else {
-			if (tkn.tokenType == token::LeftParen || tkn.tokenType == token::RightParen) {
-				while (!operatorStack.empty() && precedence[tkn.tokenString] + associativity[tkn.tokenString] <= precedence[operatorStack.back().tokenString]) {
-					outputQueue.push(operatorStack.back());
-					operatorStack.pop_back();
+		if (tkn.tokenType == token::RightParen) {
+			while (operatorStack.back().tokenType != token::LeftParen) {
+				if (operatorStack.empty()) {
+					//mismatched parens
+					throw;
 				}
-				operatorStack.push_back(tkn);
+				outputQueue.push(operatorStack.back());
+				operatorStack.pop_back();
 			}
-			else {
-				if (tkn.tokenType == token::LeftParen) {
-					operatorStack.push_back(tkn);
-				}
-				else if (tkn.tokenType == token::RightParen) {
-					while (operatorStack.back().tokenType != token::LeftParen) {
-						if (operatorStack.empty()) {
-							//mismatched parens
-							throw;
-						}
-						outputQueue.push(operatorStack.back());
-						operatorStack.pop_back();
-					}
-					operatorStack.pop_back();
-				}
-			}
+			operatorStack.pop_back();
 		}
+        tokenList.pop_back();
 	}
-	if (!operatorStack.empty() && (operatorStack.back().tokenString == "(" || operatorStack.back().tokenString == ")")) {
+	if (!operatorStack.empty() && (operatorStack.back().tokenString.compare("(") == 0 || operatorStack.back().tokenString.compare(")") == 0)) {
 		//mismatched parentheses
+        throw;
 	}
 	while (!operatorStack.empty()) {
 		outputQueue.push(operatorStack.back());

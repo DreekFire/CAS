@@ -1,11 +1,9 @@
 #pragma once
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <string>
 
-//multiple include error
-//extern std::map<std::string, std::string> variableMap;
-//extern std::map<std::string, std::string> functionMap;
+class node;
 
 class token {
 	public:
@@ -16,19 +14,21 @@ class token {
 		std::string tokenString;
 		int tokenType = 0;
 		enum type {
-			Number,
+			Constant,
 			Operator,
 			LeftParen,
 			RightParen,
 			Variable,
 			Expression,
+            Function,
+            Series
 		};
-		enum associativity {
+		enum assoc {
 			Left,
 			Right,
 		};
-		/*enum arity {
 
-		};*/
+        static std::unordered_map<std::string, int> arity;
+        static std::vector<node> functionList;
 		bool compare(token t);
 };

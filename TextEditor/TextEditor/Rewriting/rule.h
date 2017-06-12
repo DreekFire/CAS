@@ -1,16 +1,18 @@
 #pragma once
-#include "Parsing/tree.h"
+#include "Parsing/node.h"
 #include "Parsing/tokenize.h"
 #include "Parsing/shuntingYard.h"
+
+class node;
 
 class rule {
 	public:
 		rule(std::string str_a, std::string str_b);
-		rule(tree match, tree express);
+		rule(node match, node express);
 		~rule();
-		tree from;
-		tree replace;
-		node apply(tree express);
+		node from;
+		node replace;
+		static node apply(node express, rule app);
 };
 
 class ruleSet {
@@ -19,6 +21,6 @@ class ruleSet {
 		ruleSet(std::vector<rule> ruleList);
 		~ruleSet();
 		std::vector<rule> rules;
-		void reduce(tree& express);
+		void reduce(node& express);
 		void addRule(rule newRule);
 };

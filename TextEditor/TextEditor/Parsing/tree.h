@@ -11,6 +11,5 @@ class tree {
 		~tree();
 		node root;
 		void simplify();
-		void remove(int i);
-		tree copy();
+        double evaluateAt(double x);
 };

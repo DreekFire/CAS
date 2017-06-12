@@ -1,5 +1,5 @@
 #pragma once
-#include "tree.h"
+#include "node.h"
 #include <algorithm>
 
 std::vector<token> tokenize(std::string input);
